@@ -1,0 +1,6 @@
+FROM phpmyadmin:latest
+
+ENV PMA_HOST=172.17.0.1 
+ENV PMA_PORT=3307 
+
+EXPOSE 80
