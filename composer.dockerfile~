@@ -1,0 +1,14 @@
+FROM composer:latest
+
+ENV APP_NAME=meu-projeto
+
+WORKDIR /app
+
+RUN apk update && apk add git && composer create-project laravel/laravel $APP_NAME
+
+WORKDIR /app/$APP_NAME
+
+CMD ["mkdir", "testando"]
+
+EXPOSE 8000
+

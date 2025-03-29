@@ -1,0 +1,16 @@
+services:
+  web:
+    container_name: teste
+    build:
+      context: .
+      dockerfile: composer.dockerfile
+    volumes:
+      - ./app:/teste
+    ports:
+      - "8000:8000"
+    networks:
+      - redinha
+
+networks:
+  redinha:
+    driver: bridge
