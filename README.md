@@ -54,8 +54,6 @@ Isso criará a tabela **usuarios** no banco de dados MySQL.
 
 ## 📝 Funcionalidades
 - Cadastro de usuários com nome, email e senha.
-- Listagem de usuários cadastrados.
-- Interface simples para gerenciar os dados.
 
 ## 🔄 Endpoints da API que ainda podem ser feitos
 | Método | Rota           | Descrição |
