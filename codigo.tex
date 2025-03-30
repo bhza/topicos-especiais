@@ -1,0 +1,186 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage[T1]{fontenc}
+\geometry{a4paper, margin=1in}
+
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codeblue}{rgb}{0.13,0.13,1}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{white},
+    commentstyle=\color{codegray},
+    keywordstyle=\color{codeblue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{Documentação do Sistema de Cadastro de Usuários no Laravel}
+\author{Bruno}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introdução}
+Este documento detalha o desenvolvimento de um sistema de cadastro de usuários no Laravel. O projeto envolve a criação de uma migration personalizada, um controller para manipulação dos dados, views para exibição do formulário e página de sucesso, além da configuração das rotas.
+
+\section{Criando a Migration Personalizada}
+O primeiro passo foi criar uma migration para a tabela personalizada \texttt{usuarios}. Para isso, utilizei o comando:
+
+\begin{lstlisting}[language=bash]
+php artisan make:migration create_usuarios_table
+\end{lstlisting}
+
+Em seguida, editei o arquivo gerado e defini a estrutura da tabela:
+
+\begin{lstlisting}[language=PHP]
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void {
+        Schema::create('usuarios', function (Blueprint $table) {
+            $table->id();
+            $table->string('nome', 100);
+            $table->string('email')->unique();
+            $table->string('senha');
+            $table->string('telefone', 15)->nullable();
+            $table->text('endereco')->nullable();
+            $table->date('data_nascimento')->nullable();
+            $table->boolean('ativo')->default(true);
+            $table->timestamps();
+        });
+    }
+    public function down(): void {
+        Schema::dropIfExists('usuarios');
+    }
+};
+\end{lstlisting}
+
+Depois, rodei a migration:
+
+\begin{lstlisting}[language=bash]
+php artisan migrate
+\end{lstlisting}
+
+\section{Criando o Model}
+Para facilitar a manipulação dos usuários no banco:
+
+\begin{lstlisting}[language=bash]
+php artisan make:model Usuario
+\end{lstlisting}
+
+Editei \texttt{app/Models/Usuario.php}:
+
+\begin{lstlisting}[language=PHP]
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Usuario extends Model {
+    protected $table = 'usuarios';
+    protected $fillable = ['nome', 'email', 'senha', 'telefone', 'endereco', 'data_nascimento', 'ativo'];
+    protected $hidden = ['senha'];
+}
+\end{lstlisting}
+
+\section{Criando o Controller}
+
+Criei um controller:
+
+\begin{lstlisting}[language=bash]
+php artisan make:controller UsuarioController
+\end{lstlisting}
+
+Implementei os métodos:\texttt{create} e \texttt{store}:
+
+\begin{lstlisting}[language=PHP]
+namespace App\Http\Controllers;
+
+use App\Models\Usuario;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
+class UsuarioController extends Controller {
+    public function create() {
+        return view('cadastro');
+    }
+    public function store(Request $request) {
+        $request->validate([
+            'nome' => 'required|string|max:100',
+            'email' => 'required|email|unique:usuarios,email',
+            'senha' => 'required|min:6'
+        ]);
+        Usuario::create([
+            'nome' => $request->nome,
+            'email' => $request->email,
+            'senha' => Hash::make($request->senha)
+        ]);
+        return view('cadastro');
+    }
+}
+\end{lstlisting}
+
+\section{Criando as Rotas}
+
+Adicionei as rotas em \texttt{routes/web.php}:
+
+\begin{lstlisting}[language=PHP]
+use App\Http\Controllers\UsuarioController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/cadastro', [UsuarioController::class, 'create'])->name('cadastro');
+Route::post('/cadastro', [UsuarioController::class, 'store'])->name('cadastro.store');
+\end{lstlisting}
+
+\section{Criando as Views}
+
+\subsection{Formulário de Cadastro}
+Criei a view \texttt{resources/views/cadastro.blade.php}:
+
+\begin{lstlisting}[language=HTML]
+<form action="{{ route('cadastro.store') }}" method="POST">
+    @csrf
+    <label>Nome:</label>
+    <input type="text" name="nome" required>
+    <label>Email:</label>
+    <input type="email" name="email" required>
+    <label>Senha:</label>
+    <input type="password" name="senha" required>
+    <button type="submit">Cadastrar</button>
+</form>
+\end{lstlisting}
+
+\subsection{Tela de Sucesso}
+Criei \texttt{resources/views/cadastro\_sucesso.blade.php}:
+
+\begin{lstlisting}[language=HTML]
+<h2>Cadastro realizado com sucesso!</h2>
+<a href="/">Voltar para a p\'agina inicial</a>
+\end{lstlisting}
+
+\section{Conclusão}
+Este sistema foi construído utilizando Laravel, com um fluxo completo de cadastro de usuários, incluindo validação de dados e exibição de mensagens ao usuário. 
+
+\end{document}
+
+
