@@ -9,14 +9,12 @@
 <body class="container mt-5">
     <h2>Cadastro de Usuário</h2>
 
-    <!-- Exibir mensagens de sucesso -->
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
 
-    <!-- Exibir erros de validação -->
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
