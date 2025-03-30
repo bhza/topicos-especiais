@@ -76,6 +76,6 @@ docker-compose down
 Este projeto está sob a licença GPL3. Sinta-se à vontade para usá-lo e modificá-lo!
 
 ---
-Criado por [Seu Nome](https://github.com/bhza) 🚀
+Criado por [bhza](https://github.com/bhza) 🚀
 
 
