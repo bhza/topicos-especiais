@@ -6,7 +6,9 @@ VOLUME ./app/$APP_NAME
 
 WORKDIR /app
 
-RUN apk update ; apk add git ; 
+RUN apk update ; apk add git; apk add php84-mysqli php84-pdo_mysql mysql mysql-client; 
+RUN docker-php-ext-install pdo_mysql;
+
 
 WORKDIR /app/$APP_NAME
 
