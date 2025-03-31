@@ -5,7 +5,7 @@ services:
     container_name: composer
     build:
       context: .
-      dockerfile: composer.dockerfile
+      dockerfile: bhz4/composer:latest
     volumes:
       - ./app/crude:/app/crude
     ports:
@@ -18,7 +18,7 @@ services:
     container_name: mysql
     build:
       context: .
-      dockerfile: mysql.dockerfile
+      dockerfile: bhz4/mysql:latest
     ports:
       - "3307:3306"
     networks:
@@ -29,7 +29,7 @@ services:
     container_name: phpmyadmin
     build:
       context: .
-      dockerfile: phpmyadmin.dockerfile
+      dockerfile: bhz4/phpmyadmin:latest
     ports:
       - "8080:80"
     restart: always
